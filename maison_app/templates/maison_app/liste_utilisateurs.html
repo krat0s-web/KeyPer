@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Liste des Utilisateurs</title>
+    <style>
+        ul { list-style-type: none; padding: 0; }
+        li { margin: 5px 0; }
+    </style>
+</head>
+<body>
+    <h1>Liste des Utilisateurs</h1>
+    <ul>
+        {% for utilisateur in utilisateurs %}
+        <li>{{ utilisateur.nom }} (Rôle: {{ utilisateur.role }})</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

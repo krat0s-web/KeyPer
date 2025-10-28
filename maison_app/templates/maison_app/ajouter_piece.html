@@ -1,0 +1,26 @@
+{% extends "maison_app/base.html" %}
+{% block title %}Ajouter une Pièce{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4>Ajouter une Pièce</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Nom de la pièce</label>
+                            <input type="text" name="nom" class="form-control" placeholder="Cuisine, Chambre de Michel" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Ajouter</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

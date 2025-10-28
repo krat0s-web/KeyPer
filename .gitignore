@@ -1,0 +1,54 @@
+# === Environnement virtuel (À NE PAS VERSIONNER) ===
+env/
+venv/
+.venv/
+ENV/
+env*/
+
+# === Base de données locale ===
+db.sqlite3
+*.sqlite3
+
+# === Fichiers Python compilés ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+
+# === Fichiers sensibles ===
+.env
+*.env
+config/.env
+local_settings.py
+
+# === IDE / Éditeurs ===
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+*.code-workspace
+
+# === Système Windows ===
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# === Django : fichiers générés ===
+*.log
+media/
+staticfiles/
+*.pid
+
+# === Migrations locales (si tu utilises PostgreSQL/MySQL plus tard) ===
+# (mais garde les migrations dans le code !)
+# migrations/__pycache__/
+
+# === Cache et sessions ===
+*.cache
+*.session
+
+# === OneDrive / Cloud sync (À ÉVITER ABSOLUMENT) ===
+# Si tu gardes le projet dans OneDrive, ajoute :
+*.onecache
+*.tmp

@@ -1,0 +1,26 @@
+{% extends "maison_app/base.html" %}
+{% block title %}Créer un Foyer{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4>Créer un Nouveau Foyer</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Nom du foyer *</label>
+                            <input type="text" name="nom" class="form-control" placeholder="Ex: ADOMA" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Créer le foyer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

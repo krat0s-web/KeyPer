@@ -1,0 +1,32 @@
+{% extends "maison_app/base.html" %}
+{% block title %}Rejoindre un Foyer{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h4>Rejoindre un Foyer</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label>Code d'invitation</label>
+                        <input type="text" name="code" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Votre nom</label>
+                        <input type="text" name="nom" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Votre email</label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-info w-100">Rejoindre</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

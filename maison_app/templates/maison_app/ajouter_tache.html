@@ -1,0 +1,50 @@
+{% extends "maison_app/base.html" %}
+{% block title %}Ajouter une Tâche{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">➕ Nouvelle Tâche</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Titre <span class="text-danger">*</span></label>
+                        <input type="text" name="titre" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea name="description" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Date limite</label>
+                        <input type="date" name="date_limite" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Priorité</label>
+                        <select name="priorite" class="form-select">
+                            <option value="">—</option>
+                            <option value="Haute">🔴 Haute</option>
+                            <option value="Moyenne">🟡 Moyenne</option>
+                            <option value="Basse">🟢 Basse</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Pièce</label>
+                        <select name="id_piece" class="form-select">
+                            <option value="">— Aucune pièce —</option>
+                            {% for piece in pieces %}
+                            <option value="{{ piece.id }}">{{ piece.nom }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Ajouter la tâche</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
