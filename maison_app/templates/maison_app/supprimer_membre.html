@@ -1,0 +1,20 @@
+{% extends "maison_app/base.html" %}
+{% block title %}Supprimer Membre{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header bg-danger text-white">
+            <h4>Supprimer {{ membre.email }}</h4>
+        </div>
+        <div class="card-body">
+            <p>Êtes-vous sûr ?</p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Oui, supprimer</button>
+                <a href="{% url 'detail_foyer' membre.id_foyer.id %}" class="btn btn-secondary">Annuler</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

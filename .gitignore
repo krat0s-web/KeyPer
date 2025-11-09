@@ -52,3 +52,18 @@ staticfiles/
 # Si tu gardes le projet dans OneDrive, ajoute :
 *.onecache
 *.tmp
+# Django : migrations et tests locaux (garde les migrations dans le repo, mais ignore les caches)
+migrations/0*.py  # Pour ignorer les migrations vides initiales si tu en as
+
+# Django : coverage et tests
+htmlcov/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Docker (si tu ajoutes plus tard)
+.dockerignore

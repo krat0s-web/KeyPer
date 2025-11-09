@@ -4,7 +4,7 @@ import uuid
 from django.utils import timezone
 from datetime import timedelta
 
-# === CHOIX DE RÔLE (AU NIVEAU DU MODULE) ===
+# === CHOIX DE RÔLE ===
 ROLE_CHOICES = [
     ('admin', 'Administrateur'),
     ('tresorier', 'Trésorier'),
@@ -35,6 +35,7 @@ class CustomUserManager(BaseUserManager):
 # === UTILISATEUR ===
 class Utilisateur(AbstractUser):
     email = models.EmailField(unique=True)
+    nom = models.CharField(max_length=100, blank=True)  # ← NOM AFFICHÉ
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='membre')
     id_foyer = models.ForeignKey('Foyer', on_delete=models.SET_NULL, null=True, blank=True)
 
@@ -47,26 +48,35 @@ class Utilisateur(AbstractUser):
         db_table = 'utilisateur'
 
     def __str__(self):
-        return self.email
+        return self.nom or self.email
 
 # === FOYER ===
 class Foyer(models.Model):
     nom = models.CharField(max_length=100)
-    nb_pieces = models.PositiveIntegerField(null=True, blank=True)
+    photo = models.ImageField(upload_to='foyers/', null=True, blank=True)  # ← NOUVEAU
+    description = models.TextField(blank=True)  # ← NOUVEAU
+# === INVITATION ===
+class Invitation(models.Model):
+    code = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    foyer = models.ForeignKey('Foyer', on_delete=models.CASCADE)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='membre')
+    cree_par = models.ForeignKey('Utilisateur', on_delete=models.CASCADE)
+    date_creation = models.DateTimeField(auto_now_add=True)
+    utilise = models.BooleanField(default=False)
+
+    def est_valide(self):
+        return not self.utilise and self.date_creation >= timezone.now() - timedelta(days=7)
 
     class Meta:
-        db_table = 'foyer'
+        db_table = 'invitation'
 
     def __str__(self):
-        return self.nom
+        return str(self.code)
 
+# === PIÈCE ===
 class Piece(models.Model):
     nom = models.CharField(max_length=100)
-    id_foyer = models.ForeignKey(
-        Foyer, 
-        on_delete=models.CASCADE, 
-        related_name='pieces'  # ← AJOUTÉ
-    )
+    id_foyer = models.ForeignKey(Foyer, on_delete=models.CASCADE, related_name='pieces')  # ← AJOUTÉ
 
     class Meta:
         db_table = 'piece'
@@ -74,22 +84,9 @@ class Piece(models.Model):
     def __str__(self):
         return self.nom
 
-# === INVITATION ===
-class Invitation(models.Model):
-    code = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
-    foyer = models.ForeignKey(Foyer, on_delete=models.CASCADE)
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='membre')
-    cree_par = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
-    date_creation = models.DateTimeField(auto_now_add=True)
-    utilise = models.BooleanField(default=False)
-
-    def est_valide(self):
-        return not self.utilise and self.date_creation >= timezone.now() - timedelta(days=7)
-
-# === ANIMAL ===
 class Animal(models.Model):
     nom = models.CharField(max_length=100)
-    id_foyer = models.ForeignKey(Foyer, on_delete=models.SET_NULL, null=True)
+    id_foyer = models.ForeignKey(Foyer, on_delete=models.SET_NULL, null=True, related_name='animaux')  # ← AJOUTÉ
     id_piece = models.ForeignKey(Piece, on_delete=models.SET_NULL, null=True)
 
     class Meta:
@@ -125,7 +122,10 @@ class Tache(models.Model):
     ], null=True, blank=True)
     id_statut = models.ForeignKey(StatutTache, on_delete=models.SET_NULL, null=True)
     id_foyer = models.ForeignKey(Foyer, on_delete=models.SET_NULL, null=True)
-    id_piece = models.ForeignKey(Piece, on_delete=models.SET_NULL, null=True, blank=True)  # ← NOUVEAU
+    id_piece = models.ForeignKey(Piece, on_delete=models.SET_NULL, null=True, blank=True)
+    id_animal = models.ForeignKey(Animal, on_delete=models.SET_NULL, null=True, blank=True)
+    complete_par = models.ForeignKey(Utilisateur, on_delete=models.SET_NULL, null=True, blank=True, related_name='taches_completees')
+    terminee = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'tache'
@@ -144,7 +144,7 @@ class TacheAssignee(models.Model):
         unique_together = ('id_tache', 'id_user')
 
     def __str__(self):
-        return f"{self.id_tache.titre} - {self.id_user.nom}"
+        return f"{self.id_tache.titre} - {self.id_user.email}"
 
 # === TÂCHE RÉCURRENTE ===
 class TacheRecurrente(models.Model):
@@ -202,7 +202,7 @@ class ChatMessage(models.Model):
         db_table = 'chat_message'
 
     def __str__(self):
-        return f"{self.id_user.nom if self.id_user else 'Anonyme'} - {self.date_envoi}"
+        return f"{self.id_user.email if self.id_user else 'Anonyme'} - {self.date_envoi}"
 
 # === RÉCOMPENSE ===
 class Recompense(models.Model):
@@ -214,7 +214,7 @@ class Recompense(models.Model):
         db_table = 'recompense'
 
     def __str__(self):
-        return f"{self.id_user.nom} - {self.points} pts"
+        return f"{self.id_user.email} - {self.points} pts"
 
 # === STATISTIQUE ===
 class Statistique(models.Model):
@@ -227,7 +227,7 @@ class Statistique(models.Model):
         db_table = 'statistique'
 
     def __str__(self):
-        return f"{self.id_user.nom} - {self.date_stat}"
+        return f"{self.id_user.email} - {self.date_stat}"
 
 # === TUTO ===
 class Tuto(models.Model):
@@ -369,7 +369,7 @@ class HistoriqueTache(models.Model):
         db_table = 'historique_tache'
 
     def __str__(self):
-        return f"{self.id_tache.titre} - {self.id_user.nom}"
+        return f"{self.id_tache.titre} - {self.id_user.email}"
 
 # === SUGGESTION TÂCHE ===
 class SuggestionTache(models.Model):
@@ -417,7 +417,7 @@ class PreferenceUtilisateur(models.Model):
         db_table = 'preference_utilisateur'
 
     def __str__(self):
-        return f"{self.id_user.nom} - {self.type_tache}"
+        return f"{self.id_user.email} - {self.type_tache}"
 
 # === INTERACTION IA ===
 class InteractionIa(models.Model):
@@ -431,4 +431,4 @@ class InteractionIa(models.Model):
         db_table = 'interaction_ia'
 
     def __str__(self):
-        return f"{self.id_user.nom} - {self.date_interaction}"
+        return f"{self.id_user.email} - {self.date_interaction}"

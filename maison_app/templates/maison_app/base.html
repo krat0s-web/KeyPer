@@ -27,7 +27,10 @@
             box-shadow: 0 12px 24px rgba(0,0,0,0.15);
         }
         .btn { border-radius: 12px; }
-        .list-group-item { border-radius: 12px !important; margin-bottom: 8px; }
+        .input-group .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
     </style>
 </head>
 <body>
@@ -44,6 +47,7 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'liste_taches' %}">Tâches</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'liste_foyers' %}">Foyers</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'ajouter_tache' %}">+ Ajouter</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'rejoindre_foyer' %}">Rejoindre un foyer</a></li>
                 </ul>
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
@@ -53,12 +57,14 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin</a></li>
+                            <li><a class="dropdown-item" href="{% url 'inscription' %}">Créer un compte</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Déconnexion</a></li>
                         </ul>
                     </li>
                     {% else %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Connexion</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'inscription' %}">Inscription</a></li>
                     {% endif %}
                 </ul>
             </div>

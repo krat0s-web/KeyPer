@@ -1,0 +1,33 @@
+{% extends "maison_app/base.html" %}
+{% block title %}Générer Invitation{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4>Générer un Code pour {{ foyer.nom }}</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Rôle pour le nouvel utilisateur</label>
+                            <select name="role" class="form-select" required>
+                                {% for role, label in ROLE_CHOICES %}
+                                <option value="{{ role }}" {% if role == 'membre' %}selected{% endif %}>
+                                    {{ label }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Générer Code</button>
+                    </form>
+                    <a href="{% url 'liste_foyers' %}" class="btn btn-secondary mt-2 w-100">Annuler</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

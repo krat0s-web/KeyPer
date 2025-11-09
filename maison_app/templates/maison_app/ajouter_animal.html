@@ -1,0 +1,35 @@
+{% extends "maison_app/base.html" %}
+{% block title %}Ajouter un Animal{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4>Ajouter un Animal</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Nom de l'animal</label>
+                            <input type="text" name="nom" class="form-control" placeholder="Rex le chien" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Pièce (optionnel)</label>
+                            <select name="id_piece" class="form-select">
+                                <option value="">— Aucune pièce —</option>
+                                {% for piece in pieces %}
+                                <option value="{{ piece.id }}">{{ piece.nom }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Ajouter l'animal</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

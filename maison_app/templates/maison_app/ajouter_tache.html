@@ -41,6 +41,15 @@
                             {% endfor %}
                         </select>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label">Animal (optionnel)</label>
+                        <select name="id_animal" class="form-select">
+                            <option value="">— Aucun animal —</option>
+                            {% for animal in animaux %}
+                            <option value="{{ animal.id }}">{{ animal.nom }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                     <button type="submit" class="btn btn-primary w-100">Ajouter la tâche</button>
                 </form>
             </div>

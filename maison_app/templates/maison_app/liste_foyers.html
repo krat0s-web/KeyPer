@@ -3,92 +3,51 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="mb-4 text-primary fw-bold">Foyers</h2>
-    <a href="{% url 'creer_foyer' %}" class="btn btn-success btn-lg mb-4 shadow-sm">
-        + Créer un foyer
-    </a>
+    <h2 class="mb-4 text-primary fw-bold">Mes Foyers</h2>
 
-    {% for foyer in foyers %}
-    <div class="card mb-5 shadow-lg border-0 rounded-4 overflow-hidden">
-        <!-- En-tête du foyer -->
-        <div class="card-header bg-gradient text-white p-4"
-             style="background: linear-gradient(135deg, #0d6efd, #0dcaf0);">
-            <div class="d-flex justify-content-between align-items-center">
-                <h4 class="mb-0 fw-bold">{{ foyer.nom }}</h4>
-                <div>
-                    <span class="badge bg-light text-primary fs-6 px-3 py-2 me-2">
-                        {{ foyer.pieces.count }} pièce{{ foyer.pieces.count|pluralize }}
-                    </span>
-                    <a href="{% url 'supprimer_foyer' foyer.id %}" 
-                       class="btn btn-danger btn-sm"
-                       onclick="return confirm('Supprimer le foyer {{ foyer.nom }} et toutes ses pièces ?')">
-                        Supprimer
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Corps du foyer -->
-        <div class="card-body p-4">
-            <!-- Ajouter une pièce -->
-            <form method="post" class="mb-4">
-                {% csrf_token %}
-                <input type="hidden" name="foyer_id" value="{{ foyer.id }}">
-                <div class="input-group input-group-lg">
-                    <input type="text" name="nom_piece" class="form-control rounded-start-pill"
-                           placeholder="Nom de la pièce (ex: Cuisine)" required>
-                    <button type="submit" class="btn btn-outline-primary rounded-end-pill px-4">
-                        + Ajouter
-                    </button>
-                </div>
-            </form>
-
-            <!-- Liste des pièces -->
-            <h6 class="text-muted fw-bold mb-3">Pièces :</h6>
-            {% if foyer.pieces.all %}
-            <div class="row g-3">
-                {% for piece in foyer.pieces.all %}
-                <div class="col-md-6">
-                    <div class="card h-100 border-0 shadow-sm hover-shadow">
-                        <div class="card-body d-flex justify-content-between align-items-center p-3">
-                            <div>
-                                <h6 class="mb-1 fw-bold text-primary">{{ piece.nom }}</h6>
-                                <small class="text-muted">
-                                    {{ piece.tache_set.count }} tâche{{ piece.tache_set.count|pluralize }}
-                                </small>
-                            </div>
-                            <span class="badge bg-info rounded-pill">
-                                {{ piece.tache_set.count }}
-                            </span>
-                        </div>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for foyer in foyers %}
+        <div class="col">
+            <a href="{% url 'detail_foyer' foyer.id %}" class="text-decoration-none">
+                <div class="card h-100 shadow-sm hover-shadow border-0">
+                    {% if foyer.photo %}
+                    <img src="{{ foyer.photo.url }}" class="card-img-top" alt="{{ foyer.nom }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <span class="text-muted fs-4">Pas d'image</span>
+                    </div>
+                    {% endif %}
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-primary fw-bold">{{ foyer.nom }}</h5>
+                        <p class="card-text text-muted small">
+                            {{ foyer.description|truncatewords:15|default:"Aucune description" }}
+                        </p>
+                        <span class="badge bg-info">
+                            {{ foyer.pieces.count }} pièce{{ foyer.pieces.count|pluralize }}
+                        </span>
                     </div>
                 </div>
-                {% endfor %}
-            </div>
-            {% else %}
-            <div class="text-center py-5 bg-light rounded-3">
-                <em class="text-muted fs-5">Aucune pièce ajoutée</em>
-            </div>
-            {% endif %}
+            </a>
         </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="text-center py-5">
+                <em class="text-muted fs-4">Aucun foyer</em>
+            </div>
+        </div>
+        {% endfor %}
     </div>
-    {% empty %}
-    <div class="alert alert-info text-center p-5 rounded-4 shadow-sm">
-        <h5>Aucun foyer créé</h5>
-        <p>Commencez par créer votre premier foyer !</p>
-        <a href="{% url 'creer_foyer' %}" class="btn btn-primary">Créer un foyer</a>
-    </div>
-    {% endfor %}
 </div>
 
 <style>
     .hover-shadow:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.15) !important;
         transition: all 0.3s ease;
     }
-    .bg-gradient {
-        background: linear-gradient(135deg, #0d6efd, #0dcaf0) !important;
+    .card-img-top {
+        border-top-left-radius: 16px;
+        border-top-right-radius: 16px;
     }
 </style>
 {% endblock %}
